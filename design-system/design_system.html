@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telas Sinop — Design System</title>
+<meta name="description" content="Sistema de design da Telas Sinop: tipografia, cores, componentes, ícones e animações, construído sobre a identidade real da marca.">
+
+<!-- FONTS: Archivo Black (display, peso único 400 — a mesma fonte carregada no site real) + Inter (corpo e dados, idem) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- TAILWIND (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#F8FAFD',
+          surface: '#FFFFFF',
+          'surface-2': '#EEF2F6',
+          steel: '#141B24',
+          ink: '#0B121A',
+          text: '#0B121A',
+          'text-on-steel': '#F8F8F8',
+          accent: '#0092DF',
+          'accent-deep': '#005FAD',
+          whatsapp: '#00A24F',
+          warning: '#E8A317',
+          error: '#D40C1A',
+          neutral: {
+            50: '#F8FAFD', 100: '#D9DFE3', 200: '#C3CBD1', 300: '#9EA6AE',
+            400: '#7A8590', 500: '#5C6773', 600: '#454E58', 700: '#313F4F',
+            800: '#1F2A38', 900: '#141B24', 950: '#0B121A',
+          },
+        },
+        fontFamily: {
+          display: ['"Archivo Black"', 'ui-sans-serif', 'sans-serif'],
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+        },
+        borderRadius: { btn: '999px', card: '12px', lg: '16px' },
+        animation: {
+          'spin-slow': 'spin 8s linear infinite',
+          'float': 'float 8s ease-in-out infinite',
+          'aurora': 'aurora 14s ease-in-out infinite',
+          'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        },
+        keyframes: {
+          float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-16px)' } },
+          aurora: {
+            '0%,100%': { transform: 'translate(0,0) scale(1)' },
+            '33%': { transform: 'translate(30px,-40px) scale(1.08)' },
+            '66%': { transform: 'translate(-24px,20px) scale(0.96)' },
+          },
+          pulseGlow: {
+            '0%,100%': { opacity: 0.35 },
+            '50%': { opacity: 0.9 },
+          },
+        },
+      },
+    },
+  };
+</script>
+
+<!-- ICONIFY (set Solar) -->
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+
+<!-- GSAP + ScrollTrigger (hero) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS — extraídos das variáveis oklch() reais do CSS
+     compilado do site em produção (telassinop.com.br/assets/styles-*.css)
+     e convertidos para hex. Diferente da Minerion e da Brasil Stands,
+     este sistema é CLARO por padrão — o site real deles também é.
+     O token "steel" é literal: nome real usado no CSS de produção
+     para a superfície escura (rodapé, seções de contraste).
+     ============================================================ */
+  :root {
+    --bg-body: #F8FAFD;
+    --bg-surface: #FFFFFF;
+    --bg-surface-2: #EEF2F6;
+    --bg-steel: #141B24;
+    --bg-steel-2: #1F2A38;
+    --text-main: #0B121A;
+    --text-muted: #454E58;
+    --text-faint: #7A8590;
+    --text-on-steel: #F8F8F8;
+    --text-on-steel-muted: #9EA6AE;
+    --border-light: #D9DFE3;
+    --border-strong: #B9C2C9;
+    --brand-accent: #0092DF;
+    --brand-accent-deep: #005FAD;
+    --brand-whatsapp: #00A24F;
+    --feedback-warning: #E8A317;
+    --feedback-error: #D40C1A;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --gradient-glow-accent: radial-gradient(circle, rgba(0,146,223,0.16), transparent 70%);
+    --gradient-beam: conic-gradient(from 0deg, transparent 0 340deg, #0092DF 360deg);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg-body);
+    color: var(--text-main);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--brand-accent); color: #fff; }
+  :focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+
+  /* Apenas duas famílias reais — sem inventar uma terceira mono só pra
+     imitar os outros sistemas. Archivo Black é peso único (400), então
+     "peso" nunca varia em h1/h2: a ênfase vem de tamanho e cor, não de
+     peso extra. Inter cobre corpo, subtítulos e rótulos/dados. */
+  body h1, body h2 { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin: 0; }
+  body h3, body h4 { font-family: 'Inter', sans-serif; font-weight: 800; margin: 0; }
+  body h5, body h6 { font-family: 'Inter', sans-serif; font-weight: 700; margin: 0; text-transform: uppercase; }
+  body h1 { font-size: 60px; line-height: 0.98; letter-spacing: -0.005em; }
+  body h2 { font-size: 36px; line-height: 1.06; letter-spacing: -0.005em; }
+  body h3 { font-size: 22px; line-height: 30px; }
+  body h4 { font-size: 17px; line-height: 26px; }
+  body h5 { font-size: 13px; line-height: 18px; letter-spacing: 0.08em; }
+  body h6 { font-size: 11px; line-height: 16px; letter-spacing: 0.12em; }
+  @media (max-width: 767px) {
+    body h1 { font-size: 38px; line-height: 1; }
+    body h2 { font-size: 26px; line-height: 1.1; }
+  }
+  p { margin: 0; }
+  .font-display { font-family: 'Archivo Black', sans-serif; }
+  .font-sans { font-family: 'Inter', system-ui, sans-serif; }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* ============================================================
+     AMBIENT — malha diagonal (o produto literal: tela/alambrado),
+     não uma grade técnica genérica. Duas famílias de linhas a 45°
+     e -45° formam o losango de uma tela romboidal.
+     ============================================================ */
+  .bg-mesh {
+    background-image:
+      repeating-linear-gradient(45deg, rgba(11,18,26,0.05) 0 1px, transparent 1px 22px),
+      repeating-linear-gradient(-45deg, rgba(11,18,26,0.05) 0 1px, transparent 1px 22px);
+  }
+  .bg-mesh-on-steel {
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 22px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 22px);
+  }
+  .aurora-blob {
+    position: absolute; border-radius: 9999px; filter: blur(90px);
+    pointer-events: none;
+  }
+
+  /* ============================================================
+     REVEAL / ENTRANCE ANIMATIONS
+     ============================================================ */
+  .reveal { opacity: 0; transform: translateY(2rem); transition: all 1s var(--ease-out-expo); }
+  .reveal.active { opacity: 1; transform: translateY(0); }
+  .reveal-zoom { opacity: 0; transform: scale(0.92); transition: all 1s var(--ease-out-expo); }
+  .reveal-zoom.active { opacity: 1; transform: scale(1); }
+
+  .text-reveal-wrapper { overflow: hidden; display: inline-block; vertical-align: bottom; }
+  .text-reveal-content {
+    transform: translateY(110%); opacity: 0; display: block;
+    transition: transform 1.2s var(--ease-out-expo), opacity 1.2s ease;
+  }
+  .reveal-active .text-reveal-content { transform: translateY(0); opacity: 1; }
+
+  .delay-100 { transition-delay: 0.1s; }
+  .delay-200 { transition-delay: 0.2s; }
+  .delay-300 { transition-delay: 0.3s; }
+  .delay-400 { transition-delay: 0.4s; }
+  .delay-500 { transition-delay: 0.5s; }
+
+  @keyframes revealUp {
+    from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+    to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+  }
+  .blur-reveal { opacity: 0; }
+  .blur-reveal.active { animation: revealUp 1s var(--ease-out-expo) forwards; }
+
+  @keyframes clipReveal {
+    0%   { clip-path: inset(100% 0 0 0); transform: translateY(20px); }
+    100% { clip-path: inset(0 0 0 0);    transform: translateY(0); }
+  }
+  .clip-enter { clip-path: inset(100% 0 0 0); transition: clip-path 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo); }
+  .clip-enter.active { clip-path: inset(0 0 0 0); transform: translateY(0); }
+
+  /* ============================================================
+     HERO — claro, direto: manchete + estatísticas + foto real de
+     instalação num cartão, sem overlay escuro dramático (não é o
+     tom da marca: "sem lero-lero, sem enrolação").
+     ============================================================ */
+  .hero-photo-card { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--border-light); box-shadow: 0 24px 60px -20px rgba(11,18,26,0.25); }
+  .hero-photo-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* ============================================================
+     BUTTONS — accent azul é a ação primária genérica; o verde do
+     WhatsApp é reservado SOMENTE para CTAs de WhatsApp (nunca
+     decorativo) — a mesma disciplina semântica do site real.
+     ============================================================ */
+  .btn { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.01em; }
+
+  .btn-primary {
+    background: var(--brand-accent); color: #fff; border-radius: 9999px;
+    padding: 1rem 2rem; box-shadow: 0 8px 20px rgba(0,146,223,0.25);
+    transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s var(--ease-out-expo);
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0,146,223,0.35); }
+
+  .btn-whatsapp {
+    background: var(--brand-whatsapp); color: #fff; border-radius: 9999px;
+    padding: 1rem 2rem; display: inline-flex; align-items: center; gap: 0.5rem;
+    box-shadow: 0 8px 20px rgba(0,162,79,0.25);
+    transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s var(--ease-out-expo);
+  }
+  .btn-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0,162,79,0.35); }
+
+  .btn-outline {
+    position: relative; overflow: hidden; border-radius: 9999px;
+    padding: 1rem 2rem; border: 1.5px solid var(--brand-accent); color: var(--brand-accent);
+    background: transparent;
+  }
+  .btn-outline span { position: relative; z-index: 10; }
+  .btn-outline .fill {
+    position: absolute; inset: 0; background: var(--brand-accent);
+    transform: translateY(100%); transition: transform 0.35s var(--ease-out-expo); z-index: 0;
+  }
+  .btn-outline:hover .fill { transform: translateY(0); }
+  .btn-outline:hover { color: #fff; }
+
+  .btn-beam {
+    position: relative; overflow: hidden; border-radius: 9999px;
+    background: var(--bg-steel); color: #fff; padding: 1rem 2rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: transform 0.3s ease; border: 1px solid rgba(255,255,255,0.1);
+  }
+  .btn-beam:hover { transform: scale(1.03); }
+  .btn-beam::before {
+    content: ''; position: absolute; inset: 0; width: 100%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(0,146,223,0.45), transparent);
+    transform: translateX(-100%) skewX(-15deg); transition: transform 0.6s;
+  }
+  .btn-beam:hover::before { transform: translateX(100%) skewX(-15deg); transition: transform 0.8s; }
+
+  .btn-orbit { position: relative; border-radius: 9999px; padding: 2px; display: inline-flex; }
+  .btn-orbit .ring {
+    position: absolute; inset: -1px; border-radius: 9999px; overflow: hidden;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .btn-orbit:hover .ring { opacity: 1; }
+  .btn-orbit .ring::before {
+    content: ''; position: absolute; top: 50%; left: 50%; width: 300%; height: 300%;
+    transform: translate(-50%,-50%);
+    background: conic-gradient(from 0deg, transparent 0 340deg, #0092DF 360deg);
+    animation: spin 2.2s linear infinite;
+  }
+  .btn-orbit .core {
+    position: relative; z-index: 10; border-radius: 9999px; background: var(--bg-steel);
+    padding: 0.9rem 1.9rem; display: flex; align-items: center; gap: 0.6rem;
+    border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============================================================
+     CARDS
+     ============================================================ */
+  .media-card { position: relative; overflow: hidden; border-radius: 12px; aspect-ratio: 4/3; border: 1px solid var(--border-light); }
+  .media-card .bg { position: absolute; inset: 0; background-size: cover; background-position: center;
+    transition: transform 0.7s var(--ease-out-expo); }
+  .media-card:hover .bg { transform: scale(1.06); }
+  .media-card .scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,18,26,0.85), rgba(11,18,26,0.15) 55%, transparent); }
+  .media-card .content { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; }
+  .media-card .body { max-height: 0; overflow: hidden; opacity: 0; transition: all 0.4s var(--ease-out-expo); }
+  .media-card:hover .body { max-height: 100px; opacity: 1; margin-top: 0.5rem; }
+
+  .flashlight-card { position: relative; overflow: hidden; }
+  .flashlight-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0,146,223,0.12), transparent 55%);
+    opacity: 0; transition: opacity 0.4s; pointer-events: none; z-index: 2;
+  }
+  .flashlight-card:hover::before { opacity: 1; }
+
+  .glass-panel-light { background: rgba(255,255,255,0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border-light); }
+  .glass-panel-steel { background: rgba(20,27,36,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); }
+
+  /* ============================================================
+     INPUTS
+     ============================================================ */
+  .input-group { position: relative; }
+  .input-animated {
+    width: 100%; padding: 0.9rem 1rem; background: var(--bg-surface); color: var(--text-main);
+    border: 1px solid var(--border-light); border-radius: 10px;
+    outline: none; transition: border-color 0.3s, box-shadow 0.3s; font-family: 'Inter', sans-serif;
+  }
+  .input-animated::placeholder { color: var(--text-faint); }
+  .input-animated:focus { border-color: var(--brand-accent); box-shadow: 0 0 0 3px rgba(0,146,223,0.15); }
+
+  .toggle-bg { position: relative; width: 2.5rem; height: 1.5rem; background: var(--border-light); border-radius: 9999px; transition: background 0.3s; }
+  .toggle-bg.on { background: var(--brand-accent); }
+  .toggle-dot { position: absolute; left: 3px; top: 3px; width: 1.125rem; height: 1.125rem; background: #fff; border-radius: 9999px; transition: transform 0.3s var(--ease-elastic); box-shadow: 0 1px 3px rgba(11,18,26,0.3); }
+  .toggle-bg.on .toggle-dot { transform: translateX(1rem); }
+
+  /* ============================================================
+     BADGES / TOOLTIPS
+     ============================================================ */
+  .badge { display: inline-flex; align-items: center; padding: 0.3rem 0.8rem; border-radius: 9999px;
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-primary { background: var(--brand-accent); color: #fff; }
+  .badge-neutral { background: var(--bg-surface-2); color: var(--text-muted); }
+  .badge-outline { border: 1px solid var(--border-strong); color: var(--text-main); }
+
+  .tooltip-container { position: relative; display: inline-block; }
+  .tooltip {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(6px);
+    background: var(--bg-steel); color: #fff; padding: 0.4rem 0.75rem; border-radius: 6px;
+    font-size: 12px; font-family: 'Inter', sans-serif; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: all 0.25s var(--ease-out-expo); margin-bottom: 8px;
+  }
+  .tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; margin-left: -5px;
+    border-width: 5px; border-style: solid; border-color: var(--bg-steel) transparent transparent transparent;
+  }
+  .tooltip-container:hover .tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ============================================================
+     MODAL
+     ============================================================ */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(11,18,26,0.55); backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease-out-expo); z-index: 200; }
+  .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+  .modal-panel { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-45%) scale(0.94); opacity: 0;
+    pointer-events: none; transition: all 0.35s var(--ease-out-expo); z-index: 201; width: min(480px, 90vw); }
+  .modal-panel.open { transform: translate(-50%,-50%) scale(1); opacity: 1; pointer-events: auto; }
+
+  /* ============================================================
+     MARQUEE
+     ============================================================ */
+  .marquee-container { display: flex; overflow: hidden; user-select: none;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+  .marquee-content { flex-shrink: 0; display: flex; gap: 3rem; align-items: center; min-width: 100%;
+    animation: marqueeScroll 24s linear infinite; }
+  @keyframes marqueeScroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+  /* ============================================================
+     SHIMMER
+     ============================================================ */
+  @keyframes shimmerSweep { from { transform: translateX(-150%) skewX(-15deg); } to { transform: translateX(150%) skewX(-15deg); } }
+  .shimmer-demo { position: relative; overflow: hidden; }
+  .shimmer-demo::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 40%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(0,146,223,0.5), transparent);
+    animation: shimmerSweep 2.5s ease-in-out infinite;
+  }
+
+  /* ============================================================
+     ICON MICRO-ANIMATIONS
+     ============================================================ */
+  @keyframes shake { 10%,90% { transform: translate3d(-1px,0,0); } 20%,80% { transform: translate3d(2px,0,0); }
+    30%,50%,70% { transform: translate3d(-4px,0,0); } 40%,60% { transform: translate3d(4px,0,0); } }
+  .icon-shake:hover { animation: shake 0.5s ease-in-out; }
+  .stroke-draw { stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset 0.5s var(--ease-out-expo); }
+  .group:hover .stroke-draw, .stroke-draw.active { stroke-dashoffset: 0; }
+
+  /* ============================================================
+     UTILITIES
+     ============================================================ */
+  .section-label { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--brand-accent); }
+  .section-label-steel { color: #6FC3F5; }
+  .swatch { cursor: pointer; transition: transform 0.25s var(--ease-out-expo); }
+  .swatch:hover { transform: translateY(-4px); }
+  .swatch .copied-flag { opacity: 0; transition: opacity 0.2s; }
+  .swatch.copied .copied-flag { opacity: 1; }
+  .swatch.copied .hex-flag { opacity: 0; }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-surface-2); }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--brand-accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body class="bg-bg text-ink">
+
+<!-- ============================================================
+     HEADER / NAV
+     ============================================================ -->
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 border-b border-neutral-100 bg-white/85 backdrop-blur-md transition-all duration-500">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+    <a href="#top" class="flex items-center">
+      <img src="assets/logo-telassinop.png" alt="Telas Sinop" class="h-8 w-auto">
+    </a>
+    <nav class="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-neutral-500">
+      <a href="#typography" class="hover:text-accent transition-colors">Tipografia</a>
+      <a href="#colors" class="hover:text-accent transition-colors">Cores</a>
+      <a href="#components" class="hover:text-accent transition-colors">Componentes</a>
+      <a href="#icons" class="hover:text-accent transition-colors">Ícones</a>
+      <a href="#motion" class="hover:text-accent transition-colors">Animações</a>
+    </nav>
+    <a href="#components" class="btn btn-primary !py-2 !px-5 text-xs">Explorar</a>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section id="top" class="relative pt-28 pb-20 md:pt-40 md:pb-28 bg-mesh overflow-hidden">
+  <div class="aurora-blob w-[600px] h-[600px] bg-accent/10 -top-60 -right-40 animate-aurora"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-10 md:gap-8 items-center">
+    <div class="md:col-span-7">
+      <div class="hero-reveal reveal-up inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-neutral-200 bg-white" style="opacity:0">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-glow"></span>
+        <span class="font-sans text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-600">Sinop-MT · Norte e Médio-Norte de Mato Grosso</span>
+      </div>
+
+      <h1 class="max-w-2xl mb-6">
+        <div class="reveal-up block" style="opacity:0">Telas, alambrados</div>
+        <div class="reveal-up block text-accent" style="opacity:0">e gradis que aguentam</div>
+        <div class="reveal-up block" style="opacity:0">o clima de Mato Grosso.</div>
+      </h1>
+
+      <p class="hero-reveal reveal-up max-w-xl text-lg text-neutral-600 font-sans mb-8" style="opacity:0">
+        Sede e estoque próprio em Sinop, com entrega em um raio aproximado de 300&nbsp;km e assessoria técnica de quem vive de tela há anos.
+        Sem lero-lero, sem enrolação — orçamento honesto pelo WhatsApp.
+      </p>
+
+      <div class="hero-reveal reveal-up flex flex-col sm:flex-row gap-4 mb-10" style="opacity:0">
+        <a href="#components" class="btn btn-whatsapp text-center">
+          <iconify-icon icon="solar:chat-round-dots-bold"></iconify-icon>
+          Orçamento no WhatsApp
+        </a>
+        <a href="#colors" class="btn btn-outline text-center"><span>Ver produtos</span><div class="fill"></div></a>
+      </div>
+
+      <div class="hero-reveal reveal-up grid grid-cols-3 gap-4 max-w-lg pt-8 border-t border-neutral-200" style="opacity:0">
+        <div>
+          <div class="font-display text-2xl md:text-3xl text-ink">≈300km</div>
+          <div class="font-sans text-xs text-neutral-500 mt-1">raio de entrega</div>
+        </div>
+        <div>
+          <div class="font-display text-2xl md:text-3xl text-ink">4</div>
+          <div class="font-sans text-xs text-neutral-500 mt-1">famílias em estoque</div>
+        </div>
+        <div>
+          <div class="font-display text-2xl md:text-3xl text-accent">0800</div>
+          <div class="font-sans text-xs text-neutral-500 mt-1">de conversa fiada</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="md:col-span-5 reveal-zoom active">
+      <div class="hero-photo-card aspect-[4/3]">
+        <img src="assets/hero-alambrado.webp" alt="Alambrado de tela soldada instalado em quadra">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TYPOGRAPHY
+     ============================================================ -->
+<section id="typography" class="relative py-24 md:py-32 bg-surface overflow-hidden">
+  <div class="relative max-w-7xl mx-auto px-6">
+    <div class="reveal mb-16">
+      <span class="section-label">02 · Sistema</span>
+      <h2 class="mt-3">Tipografia</h2>
+      <p class="mt-4 max-w-2xl text-neutral-600 font-sans">Duas famílias reais, sem inventar uma terceira: Archivo Black para manchetes diretas (peso único — a ênfase vem do tamanho, não do peso); Inter para tudo o mais, do corpo aos rótulos de dados.</p>
+    </div>
+
+    <div class="space-y-10">
+      <!-- h1 -->
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <div class="text-reveal-wrapper"><span class="text-reveal-content">Telas Sinop</span></div>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">tag</dt> <dd class="inline text-accent font-semibold">h1</dd></div>
+          <div><dt class="inline text-neutral-400">family</dt> <dd class="inline">Archivo Black</dd></div>
+          <div><dt class="inline text-neutral-400">weight</dt> <dd class="inline">400 (peso único)</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">60px / 0.98</dd></div>
+          <div><dt class="inline text-neutral-400">transform</dt> <dd class="inline">uppercase</dd></div>
+        </dl>
+      </div>
+      <!-- h2 -->
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <h2 class="text-reveal-wrapper"><span class="text-reveal-content">Sem lero-lero, sem enrolação</span></h2>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">tag</dt> <dd class="inline text-accent font-semibold">h2</dd></div>
+          <div><dt class="inline text-neutral-400">family</dt> <dd class="inline">Archivo Black</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">36px / 1.06</dd></div>
+          <div><dt class="inline text-neutral-400">transform</dt> <dd class="inline">uppercase</dd></div>
+        </dl>
+      </div>
+      <!-- h3 -->
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <h3 class="text-reveal-wrapper"><span class="text-reveal-content">Qualidade de fábrica</span></h3>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">tag</dt> <dd class="inline text-accent font-semibold">h3</dd></div>
+          <div><dt class="inline text-neutral-400">family</dt> <dd class="inline">Inter</dd></div>
+          <div><dt class="inline text-neutral-400">weight</dt> <dd class="inline">800</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">22px / 30px</dd></div>
+        </dl>
+      </div>
+      <!-- h4 -->
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <h4 class="text-reveal-wrapper"><span class="text-reveal-content">Assessoria técnica antes, durante e depois</span></h4>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">tag</dt> <dd class="inline text-accent font-semibold">h4</dd></div>
+          <div><dt class="inline text-neutral-400">weight</dt> <dd class="inline">800</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">17px / 26px</dd></div>
+        </dl>
+      </div>
+      <!-- h5 -->
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <h5 class="text-accent">Orçamento em minutos</h5>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">tag</dt> <dd class="inline text-accent font-semibold">h5</dd></div>
+          <div><dt class="inline text-neutral-400">weight</dt> <dd class="inline">700</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">13px / 18px</dd></div>
+          <div><dt class="inline text-neutral-400">tracking</dt> <dd class="inline">0.08em, uppercase</dd></div>
+        </dl>
+      </div>
+      <!-- h6 -->
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <h6 class="text-neutral-500">Eyebrow / rótulo de seção</h6>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">tag</dt> <dd class="inline text-accent font-semibold">h6</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">11px / 16px</dd></div>
+          <div><dt class="inline text-neutral-400">tracking</dt> <dd class="inline">0.12em</dd></div>
+        </dl>
+      </div>
+
+      <!-- body roles -->
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <p class="font-sans text-lg text-neutral-700">Body LG — usado em subtítulos de destaque e introduções de seção.</p>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">role</dt> <dd class="inline text-accent font-semibold">body-lg</dd></div>
+          <div><dt class="inline text-neutral-400">weight</dt> <dd class="inline">400</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">18px / 28px</dd></div>
+        </dl>
+      </div>
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <p class="font-sans text-base text-neutral-600">Body — texto corrido padrão para parágrafos e descrições.</p>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">role</dt> <dd class="inline text-accent font-semibold">body</dd></div>
+          <div><dt class="inline text-neutral-400">weight</dt> <dd class="inline">400</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">16px / 24px</dd></div>
+        </dl>
+      </div>
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center border-b border-neutral-100 pb-10">
+        <p class="font-sans text-sm text-neutral-500">Body SM — texto de apoio, legendas e notas secundárias.</p>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">role</dt> <dd class="inline text-accent font-semibold">body-sm</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">14px / 20px</dd></div>
+        </dl>
+      </div>
+      <div class="reveal grid md:grid-cols-[1fr,280px] gap-6 items-center pb-2">
+        <p class="font-sans text-xs font-bold uppercase tracking-[0.1em] text-neutral-500">Caption / Label — metadados, badges, texto auxiliar</p>
+        <dl class="font-sans text-xs text-neutral-500 space-y-1">
+          <div><dt class="inline text-neutral-400">role</dt> <dd class="inline text-accent font-semibold">caption</dd></div>
+          <div><dt class="inline text-neutral-400">weight</dt> <dd class="inline">700</dd></div>
+          <div><dt class="inline text-neutral-400">size/lh</dt> <dd class="inline">12px / 16px</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     COLORS
+     ============================================================ -->
+<section id="colors" class="relative py-24 md:py-32 bg-bg bg-mesh overflow-hidden">
+  <div class="relative max-w-7xl mx-auto px-6">
+    <div class="reveal mb-16">
+      <span class="section-label">03 · Sistema</span>
+      <h2 class="mt-3">Cores</h2>
+      <p class="mt-4 max-w-2xl text-neutral-600 font-sans">Clique em qualquer amostra para copiar o hex. Azul e "steel" vêm direto dos tokens oklch() do CSS de produção; o verde do WhatsApp é semântico — uso exclusivo no CTA de WhatsApp, nunca decorativo.</p>
+    </div>
+
+    <!-- Brand -->
+    <h6 class="reveal text-neutral-400 mb-4">Marca</h6>
+    <div id="palette-brand" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14"></div>
+
+    <!-- Neutral -->
+    <h6 class="reveal text-neutral-400 mb-4">Escala neutra</h6>
+    <div id="palette-neutral" class="grid grid-cols-3 md:grid-cols-6 gap-4 mb-14"></div>
+
+    <!-- Feedback -->
+    <h6 class="reveal text-neutral-400 mb-4">Feedback (extensão do sistema)</h6>
+    <div id="palette-feedback" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14"></div>
+
+    <!-- Gradients / opacity -->
+    <h6 class="reveal text-neutral-400 mb-4">Gradientes &amp; opacidade</h6>
+    <div class="reveal grid md:grid-cols-3 gap-4">
+      <div class="rounded-card h-32 flex items-end p-4 border border-neutral-100" style="background: var(--gradient-glow-accent), #fff;">
+        <span class="font-sans text-xs text-neutral-500">radial-gradient · glow azul</span>
+      </div>
+      <div class="rounded-card h-32 flex items-end p-4 relative overflow-hidden border border-neutral-100" style="background:#fff;">
+        <div class="absolute inset-0" style="background: var(--gradient-beam); opacity:0.5; animation: spin 6s linear infinite;"></div>
+        <span class="relative font-sans text-xs text-neutral-500">conic-gradient · beam</span>
+      </div>
+      <div class="rounded-card h-32 p-4 flex flex-col justify-end gap-1 border border-neutral-100" style="background:#fff;">
+        <div class="flex gap-1">
+          <div class="w-6 h-6 rounded bg-accent/10"></div><div class="w-6 h-6 rounded bg-accent/20"></div>
+          <div class="w-6 h-6 rounded bg-accent/40"></div><div class="w-6 h-6 rounded bg-accent/60"></div>
+          <div class="w-6 h-6 rounded bg-accent/80"></div><div class="w-6 h-6 rounded bg-accent"></div>
+        </div>
+        <span class="font-sans text-xs text-neutral-500">opacidade 10→100%</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     COMPONENTS
+     ============================================================ -->
+<section id="components" class="relative py-24 md:py-32 bg-surface overflow-hidden">
+  <div class="relative max-w-7xl mx-auto px-6">
+    <div class="reveal mb-16">
+      <span class="section-label">04 · Sistema</span>
+      <h2 class="mt-3">Componentes de UI</h2>
+      <p class="mt-4 max-w-2xl text-neutral-600 font-sans">Cada componente é interativo — passe o mouse, clique, foque nos campos.</p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="reveal mb-20">
+      <h3 class="mb-2 text-ink">Botões</h3>
+      <p class="text-sm text-neutral-500 font-sans mb-6">Azul = ação primária genérica. Verde = exclusivo de WhatsApp.</p>
+      <div class="flex flex-wrap gap-5 items-center">
+        <button class="btn btn-primary">Solicitar orçamento</button>
+        <button class="btn btn-whatsapp"><iconify-icon icon="solar:chat-round-dots-bold"></iconify-icon>WhatsApp</button>
+        <button class="btn btn-outline"><span>Ver produtos</span><div class="fill"></div></button>
+        <button class="btn-beam">
+          <span class="relative z-10">Ver categorias</span>
+          <iconify-icon icon="solar:arrow-right-linear" class="relative z-10"></iconify-icon>
+        </button>
+        <span class="btn-orbit">
+          <span class="ring"></span>
+          <span class="core">
+            <span class="font-sans font-bold text-sm text-white">Calcular metragem</span>
+            <iconify-icon icon="solar:arrow-right-linear" class="text-white"></iconify-icon>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="reveal mb-20">
+      <h3 class="mb-6 text-ink">Estatísticas <span class="text-neutral-400 text-sm font-sans font-normal">(números reais, com a piada de marca preservada)</span></h3>
+      <div class="grid grid-cols-3 gap-4 md:gap-6">
+        <div class="rounded-card border border-neutral-100 bg-bg p-6 md:p-8">
+          <div class="font-display tabular text-3xl md:text-4xl text-accent">≈300km</div>
+          <div class="font-sans text-xs font-bold uppercase tracking-widest text-neutral-400 mt-2">Raio de entrega</div>
+        </div>
+        <div class="rounded-card border border-neutral-100 bg-bg p-6 md:p-8">
+          <div class="font-display tabular text-3xl md:text-4xl text-accent">4</div>
+          <div class="font-sans text-xs font-bold uppercase tracking-widest text-neutral-400 mt-2">Famílias em estoque</div>
+        </div>
+        <div class="rounded-card border border-neutral-100 bg-bg p-6 md:p-8">
+          <div class="font-display tabular text-3xl md:text-4xl text-ink">0800</div>
+          <div class="font-sans text-xs font-bold uppercase tracking-widest text-neutral-400 mt-2">De conversa fiada</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inputs -->
+    <div class="reveal mb-20 grid md:grid-cols-2 gap-10">
+      <div>
+        <h3 class="mb-6 text-ink">Inputs</h3>
+        <label class="block font-sans text-xs font-bold uppercase tracking-widest text-neutral-400 mb-2">Cidade ou CEP</label>
+        <div class="input-group max-w-sm">
+          <input type="text" placeholder="Sinop, MT" class="input-animated">
+        </div>
+        <label class="flex items-center gap-3 cursor-pointer mt-8 select-none" id="toggle-demo">
+          <div class="toggle-bg"><div class="toggle-dot"></div></div>
+          <span class="text-sm text-neutral-600 font-sans">Receber orçamento por e-mail também</span>
+        </label>
+      </div>
+      <div>
+        <h3 class="mb-6 text-ink">Badges &amp; Tooltip</h3>
+        <div class="flex flex-wrap gap-3 mb-8">
+          <span class="badge badge-primary">Tela Soldada</span>
+          <span class="badge badge-neutral">Gradil</span>
+          <span class="badge badge-outline">Arames</span>
+        </div>
+        <div class="tooltip-container">
+          <button class="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center hover:border-accent transition-colors">
+            <iconify-icon icon="solar:info-circle-linear"></iconify-icon>
+          </button>
+          <div class="tooltip">Passe o mouse para ver o tooltip</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="reveal mb-20">
+      <h3 class="mb-6 text-ink">Cards <span class="text-neutral-400 text-sm font-sans font-normal">(linha de produtos real)</span></h3>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="media-card">
+          <div class="bg" style="background-image:url('assets/hero-alambrado.webp')"></div>
+          <div class="scrim"></div>
+          <div class="content">
+            <span class="badge badge-primary mb-3 w-fit">Destaque</span>
+            <h4 class="text-white mb-1">Tela Soldada</h4>
+            <div class="body">
+              <p class="text-neutral-200 text-sm font-sans">Galvanizada, para construção civil e cercamento — a linha mais pedida.</p>
+            </div>
+          </div>
+        </div>
+        <div class="flashlight-card rounded-card border border-neutral-100 bg-bg p-8 flex flex-col justify-between" style="min-height:100%" onmousemove="fxFlashlight(event,this)">
+          <iconify-icon icon="solar:cursor-bold-duotone" class="text-3xl text-accent"></iconify-icon>
+          <div>
+            <h4 class="text-ink mb-2">Card flashlight</h4>
+            <p class="text-neutral-500 text-sm font-sans">Um glow azul segue o cursor — mova o mouse sobre este card.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonials (conteúdo real) -->
+    <div class="reveal mb-20 relative rounded-lg overflow-hidden bg-steel bg-mesh-on-steel p-10 md:p-14">
+      <h3 class="text-text-on-steel mb-8">Quem já comprou aprova <span class="text-neutral-400 text-sm font-sans font-normal">(depoimentos reais)</span></h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="glass-panel-steel rounded-card p-6">
+          <p class="font-sans text-sm text-neutral-200 mb-4">"Bom atendimento, preço justo e qualidade."</p>
+          <p class="font-sans text-xs font-bold uppercase tracking-widest text-accent">— Claudinei Dehrun</p>
+        </div>
+        <div class="glass-panel-steel rounded-card p-6">
+          <p class="font-sans text-sm text-neutral-200 mb-4">"Excelente atendimento e produtos de qualidade!"</p>
+          <p class="font-sans text-xs font-bold uppercase tracking-widest text-accent">— Suzane Sumida</p>
+        </div>
+        <div class="glass-panel-steel rounded-card p-6">
+          <p class="font-sans text-sm text-neutral-200 mb-4">"Ótimo atendimento, boa qualidade dos produtos."</p>
+          <p class="font-sans text-xs font-bold uppercase tracking-widest text-accent">— Klaus Schneider</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navbar demo -->
+    <div class="reveal mb-20">
+      <h3 class="mb-6 text-ink">Navbar (demo)</h3>
+      <div class="rounded-card overflow-hidden border border-neutral-100">
+        <div class="glass-panel-light flex items-center justify-between px-6 py-4">
+          <span class="font-display text-sm text-ink">TELAS SINOP</span>
+          <div class="hidden sm:flex gap-6 font-sans text-xs font-bold uppercase tracking-widest text-neutral-500">
+            <span class="text-accent">Início</span><span>Produtos</span><span>Blog</span>
+          </div>
+          <button class="btn btn-whatsapp !py-2 !px-4 text-xs">WhatsApp</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section pattern demo -->
+    <div class="reveal mb-20">
+      <h3 class="mb-6 text-ink">Padrão de seção</h3>
+      <div class="relative rounded-card border border-neutral-100 bg-bg bg-mesh overflow-hidden p-10">
+        <div class="relative reveal-zoom active">
+          <span class="section-label">Exemplo</span>
+          <h4 class="text-ink mt-2">Fundo em malha + reveal em stagger</h4>
+          <p class="text-neutral-500 font-sans text-sm mt-2 max-w-md">A malha diagonal é o produto literal da marca — não uma grade técnica genérica — combinada com uma entrada suave.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal trigger -->
+    <div class="reveal">
+      <h3 class="mb-6 text-ink">Modal</h3>
+      <button class="btn btn-outline" onclick="fxOpenModal()"><span>Abrir modal</span><div class="fill"></div></button>
+    </div>
+  </div>
+</section>
+
+<!-- Modal markup -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="fxCloseModal()"></div>
+<div class="modal-panel rounded-lg p-8" id="modal-panel" style="background:#fff;">
+  <div class="flex items-start justify-between mb-4">
+    <h3 class="text-ink">Calcule sua metragem</h3>
+    <button onclick="fxCloseModal()" class="text-neutral-400 hover:text-accent transition-colors">
+      <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+    </button>
+  </div>
+  <p class="text-neutral-500 font-sans text-sm mb-6">Este é o componente de modal do sistema — painel branco, entrada com scale + fade, fecha ao clicar fora ou pressionar Esc.</p>
+  <button class="btn btn-primary w-full" onclick="fxCloseModal()">Entendi</button>
+</div>
+
+<!-- ============================================================
+     ICONS
+     ============================================================ -->
+<section id="icons" class="relative py-24 md:py-32 bg-bg bg-mesh overflow-hidden">
+  <div class="relative max-w-7xl mx-auto px-6">
+    <div class="reveal mb-16">
+      <span class="section-label">05 · Sistema</span>
+      <h2 class="mt-3">Ícones</h2>
+      <p class="mt-4 max-w-2xl text-neutral-600 font-sans">Set Solar via Iconify, cor de destaque azul sobre fundo claro.</p>
+    </div>
+
+    <div id="icon-grid" class="reveal grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 mb-16"></div>
+
+    <h6 class="reveal text-neutral-400 mb-6">Ícones animados</h6>
+    <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="rounded-card border border-neutral-100 bg-surface p-6 flex flex-col items-center gap-3 group cursor-pointer">
+        <iconify-icon icon="solar:ruler-cross-pen-bold-duotone" class="text-3xl text-accent transition-transform duration-700 group-hover:rotate-180"></iconify-icon>
+        <span class="text-xs font-sans font-semibold text-neutral-500">rotate 180°</span>
+      </div>
+      <div class="rounded-card border border-neutral-100 bg-surface p-6 flex flex-col items-center gap-3 group cursor-pointer">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-accent"><path class="stroke-draw" d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="text-xs font-sans font-semibold text-neutral-500">stroke draw</span>
+      </div>
+      <div class="rounded-card border border-neutral-100 bg-surface p-6 flex flex-col items-center gap-3 icon-shake cursor-pointer">
+        <iconify-icon icon="solar:bell-bold-duotone" class="text-3xl text-accent"></iconify-icon>
+        <span class="text-xs font-sans font-semibold text-neutral-500">shake (hover)</span>
+      </div>
+      <div class="rounded-card border border-neutral-100 bg-surface p-6 flex flex-col items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 44 44" class="text-accent"><circle cx="22" cy="22" r="18" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="28 84" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 22 22" to="360 22 22" dur="1s" repeatCount="indefinite"/></circle></svg>
+        <span class="text-xs font-sans font-semibold text-neutral-500">spinner SVG</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ANIMATIONS CATALOGUE
+     ============================================================ -->
+<section id="motion" class="relative py-24 md:py-32 bg-surface overflow-hidden">
+  <div class="relative max-w-7xl mx-auto px-6">
+    <div class="reveal mb-16">
+      <span class="section-label">06 · Sistema</span>
+      <h2 class="mt-3">Catálogo de animações</h2>
+      <p class="mt-4 max-w-2xl text-neutral-600 font-sans">Easing padrão: <code class="font-sans font-bold text-accent">cubic-bezier(0.16, 1, 0.3, 1)</code> ("ease-out-expo"), 0.8–1.2s, stagger em incrementos de 0.1s.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <div class="reveal rounded-card border border-neutral-100 bg-bg p-6 flex flex-col gap-4" data-motion="curtain">
+        <div class="h-20 flex items-center overflow-hidden">
+          <div class="text-reveal-wrapper motion-target"><span class="text-reveal-content font-display text-xl text-accent">CURTAIN</span></div>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-sans text-neutral-400">text-reveal-wrapper</span>
+          <button class="text-xs font-sans font-bold text-accent hover:underline" onclick="fxReplay(this)">Replay ↻</button>
+        </div>
+      </div>
+
+      <div class="reveal rounded-card border border-neutral-100 bg-bg p-6 flex flex-col gap-4" data-motion="blur">
+        <div class="h-20 flex items-center justify-center">
+          <div class="blur-reveal motion-target font-display text-xl text-accent">BLUR</div>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-sans text-neutral-400">@keyframes revealUp</span>
+          <button class="text-xs font-sans font-bold text-accent hover:underline" onclick="fxReplay(this)">Replay ↻</button>
+        </div>
+      </div>
+
+      <div class="reveal rounded-card border border-neutral-100 bg-bg p-6 flex flex-col gap-4" data-motion="clip">
+        <div class="h-20 flex items-center justify-center">
+          <div class="clip-enter motion-target font-display text-xl text-accent">CLIP</div>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-sans text-neutral-400">@keyframes clipReveal</span>
+          <button class="text-xs font-sans font-bold text-accent hover:underline" onclick="fxReplay(this)">Replay ↻</button>
+        </div>
+      </div>
+
+      <div class="reveal rounded-card border border-neutral-100 bg-bg p-6 flex flex-col gap-4">
+        <div class="h-20 flex items-center justify-center">
+          <div class="shimmer-demo px-4 py-2 rounded-full border border-accent/40 font-sans font-bold text-sm text-accent">Shimmer sweep</div>
+        </div>
+        <span class="text-xs font-sans text-neutral-400">infinite · 2.5s</span>
+      </div>
+
+      <div class="reveal rounded-card border border-neutral-100 bg-steel bg-mesh-on-steel p-6 flex flex-col gap-4 relative overflow-hidden" style="min-height:140px">
+        <div class="aurora-blob w-40 h-40 bg-accent/30 top-4 left-4 animate-aurora"></div>
+        <span class="relative font-sans font-bold text-sm text-white mt-auto">Aurora float</span>
+        <span class="relative text-xs font-sans text-neutral-400">multi-axis blob · 14s</span>
+      </div>
+
+      <div class="reveal rounded-card border border-neutral-100 bg-bg p-6 flex flex-col gap-4 overflow-hidden">
+        <div class="marquee-container h-10 items-center">
+          <div class="marquee-content font-sans font-bold text-sm text-neutral-500">
+            <span>TELA SOLDADA</span><span>·</span><span>GRADIL</span><span>·</span><span>TELA HEXAGONAL</span><span>·</span><span>ARAMES</span><span>·</span><span>ALAMBRADO</span><span>·</span><span>CERCA CAMPEIRA</span>
+          </div>
+          <div class="marquee-content font-sans font-bold text-sm text-neutral-500" aria-hidden="true">
+            <span>TELA SOLDADA</span><span>·</span><span>GRADIL</span><span>·</span><span>TELA HEXAGONAL</span><span>·</span><span>ARAMES</span><span>·</span><span>ALAMBRADO</span><span>·</span><span>CERCA CAMPEIRA</span>
+          </div>
+        </div>
+        <span class="text-xs font-sans text-neutral-400">marquee com máscara de borda · linha real de produtos</span>
+      </div>
+
+      <div class="reveal rounded-card border border-neutral-100 bg-bg p-6 flex flex-col gap-4 items-center">
+        <div class="relative w-16 h-16 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full" style="background:var(--gradient-beam); animation: spin 4s linear infinite;"></div>
+          <div class="absolute inset-[3px] rounded-full bg-bg"></div>
+        </div>
+        <span class="text-xs font-sans text-neutral-400">conic beam · 4s linear</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="relative bg-steel bg-mesh-on-steel border-t border-white/10 py-16">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="flex flex-col items-center md:items-start gap-1">
+      <span class="font-display text-sm text-white">TELAS SINOP</span>
+      <span class="font-sans text-xs text-neutral-400">Design System · v1.0</span>
+    </div>
+    <p class="font-sans text-xs text-neutral-500 text-center">Av. Integração, 7070 · LIC Norte · Sinop-MT · CEP 78551-033</p>
+  </div>
+</footer>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ---------- HERO: entrance ---------- */
+  const heroReveals = document.querySelectorAll('#top .reveal-up');
+  heroReveals.forEach((el, i) => {
+    gsap.to(el, { opacity: 1, y: 0, duration: 1, delay: 0.15 * i, ease: 'power3.out' });
+  });
+
+  /* ---------- NAVBAR scrolled state ---------- */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 40) navbar.classList.add('shadow-sm');
+    else navbar.classList.remove('shadow-sm');
+  });
+
+  /* ---------- GENERIC REVEAL OBSERVER ---------- */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        entry.target.classList.add('reveal-active');
+        entry.target.querySelectorAll('.clip-enter, .blur-reveal, .text-reveal-wrapper, .reveal-zoom').forEach((el) => {
+          el.classList.add('active');
+          el.classList.add('reveal-active');
+        });
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal, .reveal-zoom, .blur-reveal, .clip-enter, .text-reveal-wrapper').forEach((el) => io.observe(el));
+
+  /* ---------- FLASHLIGHT CARD ---------- */
+  function fxFlashlight(e, card) {
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+    card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+  }
+
+  /* ---------- TOGGLE ---------- */
+  document.getElementById('toggle-demo').addEventListener('click', function () {
+    this.querySelector('.toggle-bg').classList.toggle('on');
+  });
+
+  /* ---------- MODAL ---------- */
+  function fxOpenModal() {
+    document.getElementById('modal-backdrop').classList.add('open');
+    document.getElementById('modal-panel').classList.add('open');
+  }
+  function fxCloseModal() {
+    document.getElementById('modal-backdrop').classList.remove('open');
+    document.getElementById('modal-panel').classList.remove('open');
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fxCloseModal(); });
+
+  /* ---------- COLOR PALETTE RENDER + COPY ---------- */
+  const brand = [
+    ['bg', '#F8FAFD', 'neutral · background'],
+    ['surface', '#FFFFFF', 'neutral · cartões e painéis'],
+    ['steel', '#141B24', 'neutral · faixas de contraste, rodapé (token real)'],
+    ['ink', '#0B121A', 'primary · texto principal'],
+    ['accent', '#0092DF', 'accent · CTA, links, destaque (cor real da marca)'],
+    ['accent-deep', '#005FAD', 'accent · hover, texto sobre claro'],
+    ['whatsapp', '#00A24F', 'semantic · exclusivo do CTA de WhatsApp'],
+    ['error', '#D40C1A', 'feedback · erro (token real)'],
+  ];
+  const neutral = [
+    ['950', '#0B121A'], ['900', '#141B24'], ['800', '#1F2A38'],
+    ['700', '#313F4F'], ['600', '#454E58'], ['500', '#5C6773'],
+    ['400', '#7A8590'], ['300', '#9EA6AE'], ['200', '#C3CBD1'],
+    ['100', '#D9DFE3'], ['50', '#F8FAFD'],
+  ];
+  const feedback = [
+    ['success', '#00A24F', 'sucesso · mesmo verde do WhatsApp'],
+    ['warning', '#E8A317', 'atenção · extensão do sistema'],
+    ['error', '#D40C1A', 'erro · token real do site'],
+    ['info', '#0092DF', 'informativo · azul da marca'],
+  ];
+
+  function hexToRgb(hex) {
+    const h = hex.replace('#', '');
+    if (h.length !== 6) return null;
+    const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+    return [r,g,b];
+  }
+  function rgbToHsl(r,g,b) {
+    r/=255; g/=255; b/=255;
+    const max=Math.max(r,g,b), min=Math.min(r,g,b);
+    let h,s,l=(max+min)/2;
+    if (max===min) { h=s=0; }
+    else {
+      const d=max-min; s = l>0.5 ? d/(2-max-min) : d/(max+min);
+      switch(max){ case r: h=(g-b)/d+(g<b?6:0); break; case g: h=(b-r)/d+2; break; default: h=(r-g)/d+4; }
+      h/=6;
+    }
+    return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+  }
+
+  function renderSwatches(containerId, list) {
+    const container = document.getElementById(containerId);
+    list.forEach(([name, hex, role]) => {
+      const rgb = hexToRgb(hex.split(' ')[0]);
+      const rgbStr = rgb ? `rgb(${rgb.join(', ')})` : '—';
+      const hslArr = rgb ? rgbToHsl(...rgb) : null;
+      const hslStr = hslArr ? `hsl(${hslArr[0]}, ${hslArr[1]}%, ${hslArr[2]}%)` : '—';
+      const isLight = ['#F8FAFD','#FFFFFF','#D9DFE3','#C3CBD1','#E8A317'].includes(hex);
+      const card = document.createElement('div');
+      card.className = 'swatch rounded-card overflow-hidden border border-neutral-100';
+      card.innerHTML = `
+        <div class="h-20 flex items-end p-3 relative" style="background:${hex.split(' ')[0]}">
+          <span class="hex-flag font-sans text-[10px] font-bold px-1.5 py-0.5 rounded ${isLight?'bg-black/10 text-ink':'bg-black/30 text-white'}">${hex.split(' ')[0]}</span>
+          <span class="copied-flag absolute inset-0 flex items-center justify-center font-sans text-[10px] font-bold bg-ink/80 text-accent">copiado ✓</span>
+        </div>
+        <div class="p-3 bg-surface">
+          <div class="font-sans text-xs font-bold text-ink">${name}</div>
+          ${role ? `<div class="font-sans text-[10px] text-neutral-400 mt-1">${role}</div>` : ''}
+          <div class="font-sans text-[10px] text-neutral-400 mt-1">${rgbStr}</div>
+          <div class="font-sans text-[10px] text-neutral-400">${hslStr}</div>
+        </div>`;
+      card.addEventListener('click', () => {
+        const value = hex.split(' ')[0];
+        if (navigator.clipboard) navigator.clipboard.writeText(value).catch(()=>{});
+        card.classList.add('copied');
+        setTimeout(() => card.classList.remove('copied'), 1200);
+      });
+      container.appendChild(card);
+    });
+  }
+  renderSwatches('palette-brand', brand);
+  renderSwatches('palette-neutral', neutral);
+  renderSwatches('palette-feedback', feedback);
+
+  /* ---------- ICON GRID ---------- */
+  const iconNames = [
+    'solar:widget-2-bold-duotone','solar:ruler-cross-pen-bold-duotone','solar:delivery-bold-duotone',
+    'solar:map-point-bold-duotone','solar:phone-calling-bold-duotone','solar:chat-round-dots-bold-duotone',
+    'solar:shield-check-bold-duotone','solar:box-bold-duotone','solar:home-2-bold-duotone',
+    'solar:tree-bold-duotone','solar:sun-bold-duotone','solar:leaf-bold-duotone',
+    'solar:settings-bold-duotone','solar:magnifer-linear','solar:layers-minimalistic-bold-duotone',
+    'solar:archive-bold-duotone','solar:calendar-bold-duotone','solar:users-group-rounded-bold-duotone',
+    'solar:star-bold-duotone','solar:bolt-bold-duotone','solar:check-circle-bold',
+    'solar:close-circle-linear','solar:info-circle-linear','solar:danger-triangle-bold',
+    'solar:bell-bold-duotone','solar:download-linear','solar:share-linear',
+    'solar:bookmark-linear','solar:heart-linear','solar:route-bold-duotone'
+  ];
+  const iconGrid = document.getElementById('icon-grid');
+  iconNames.forEach((name) => {
+    const cell = document.createElement('div');
+    cell.className = 'aspect-square rounded-card border border-neutral-100 bg-surface flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-colors group';
+    cell.innerHTML = `<iconify-icon icon="${name}" class="text-2xl text-neutral-500 group-hover:text-accent transition-colors"></iconify-icon>`;
+    iconGrid.appendChild(cell);
+  });
+
+  /* ---------- MOTION CATALOGUE REPLAY ---------- */
+  function fxReplay(btn) {
+    const card = btn.closest('[data-motion]');
+    const target = card.querySelector('.motion-target');
+    const type = card.dataset.motion;
+    if (type === 'curtain') {
+      target.classList.remove('reveal-active');
+      void target.offsetWidth;
+      target.classList.add('reveal-active');
+    } else if (type === 'blur' || type === 'clip') {
+      target.classList.remove('active');
+      void target.offsetWidth;
+      target.classList.add('active');
+    }
+  }
+</script>
+
+</body>
+</html>
