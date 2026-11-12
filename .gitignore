@@ -5,3 +5,6 @@ next-env.d.ts
 *.tsbuildinfo
 .env*.local
 .env
+
+# originais das fotos (as versões otimizadas ficam em public/fotos)
+imagens/

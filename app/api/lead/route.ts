@@ -33,9 +33,6 @@ export async function POST(req: Request) {
     tipoArea: str(body.tipoArea, 40),
     metragem: str(body.metragem, 60),
     entrega: str(body.entrega, 20),
-    oQueCercar: str(body.oQueCercar, 300),
-    prazo: str(body.prazo, 40),
-    mensagem: str(body.mensagem, 1000),
   };
 
   const errors = validateLead(lead);

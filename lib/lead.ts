@@ -5,9 +5,6 @@ export type Lead = {
   tipoArea: string;
   metragem: string;
   entrega: string;
-  oQueCercar: string;
-  prazo: string;
-  mensagem: string;
 };
 
 export type LeadErrors = Partial<Record<keyof Lead, string>>;
@@ -19,9 +16,6 @@ export const emptyLead: Lead = {
   tipoArea: "",
   metragem: "",
   entrega: "",
-  oQueCercar: "",
-  prazo: "",
-  mensagem: "",
 };
 
 export function onlyDigits(v: string) {
@@ -44,7 +38,6 @@ export function validateLead(l: Lead): LeadErrors {
   if (phone.length < 10 || phone.length > 11) e.whatsapp = "Informe um WhatsApp com DDD.";
   if (l.cidade.trim().length < 2) e.cidade = "Informe a cidade.";
   if (!l.tipoArea) e.tipoArea = "Escolha o tipo de área.";
-  if (l.mensagem.length > 1000) e.mensagem = "Máximo de 1000 caracteres.";
   return e;
 }
 

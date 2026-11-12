@@ -66,6 +66,41 @@ export const productList = [
   { name: "Acessórios para cercamento", text: "Itens que complementam a instalação e ajudam a montar a solução correta." },
 ];
 
+/** Fotos do carrossel da seção de produtos (public/fotos). */
+export const productSlides = [
+  {
+    src: "/fotos/soldagem-1.webp",
+    alt: "Soldador fixando tela soldada em uma estrutura metálica, com faíscas",
+    caption: "Soldagem de telas e gradis",
+  },
+  {
+    src: "/fotos/tela-hexagonal-rural.webp",
+    alt: "Tela hexagonal galvanizada presa em mourões de madeira, com gado ao fundo",
+    caption: "Tela hexagonal para o campo",
+  },
+  {
+    src: "/fotos/galinheiro.webp",
+    alt: "Galinheiro de madeira fechado com tela hexagonal, com galinhas dentro",
+    caption: "Galinheiros e viveiros",
+  },
+  {
+    src: "/fotos/soldagem-2.webp",
+    alt: "Close de solda em tela de arame ondulado presa a um quadro de aço",
+    caption: "Produção de telas soldadas",
+  },
+  {
+    src: "/fotos/fabrica-bobinas.webp",
+    alt: "Caminhão carregado com bobinas de tela soldada em frente ao galpão da fábrica",
+    caption: "Bobinas prontas para entrega",
+    position: "center 80%",
+  },
+  {
+    src: "/fotos/pinteiro.webp",
+    alt: "Pinteiro com tela, pintinhos, comedouro e bebedouro sobre maravalha",
+    caption: "Pinteiros e pequenas criações",
+  },
+];
+
 export const authoritySeals = [
   "12 anos de atuação",
   "Fabricação própria",
@@ -96,5 +131,3 @@ export const areaTypes = [
 ];
 
 export const deliveryOptions = ["Sim", "Não", "Ainda não sei"];
-
-export const deadlineOptions = ["Imediato", "Até 7 dias", "Até 15 dias", "Até 30 dias", "Ainda estou pesquisando"];

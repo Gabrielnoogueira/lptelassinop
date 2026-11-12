@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Telas Sinop | Direto da fábrica em Sinop / MT",
     description: "Fabricação própria, melhor custo-benefício e orientação para escolher o cercamento certo.",
-    images: ["/hero-alambrado.webp"],
+    images: ["/fotos/hero-chacara.webp"],
     locale: "pt_BR",
     type: "website",
   },

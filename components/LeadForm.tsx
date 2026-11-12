@@ -2,7 +2,7 @@
 
 import { Icon } from "@iconify/react";
 import { useState, type FormEvent, type ReactNode } from "react";
-import { areaTypes, deadlineOptions, deliveryOptions } from "@/lib/content";
+import { areaTypes, deliveryOptions } from "@/lib/content";
 import { emptyLead, maskPhone, validateLead, type Lead, type LeadErrors } from "@/lib/lead";
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -138,45 +138,14 @@ export default function LeadForm() {
         className="sm:col-span-2"
       />
 
-      <Field id="oQueCercar" label="O que você deseja cercar?" hint="opcional" className="sm:col-span-2">
-        <input
-          id="f-oQueCercar"
-          className="input-animated"
-          placeholder="Ex.: fundo da chácara, piquete para gado, frente do terreno..."
-          value={lead.oQueCercar}
-          onChange={(e) => set("oQueCercar", e.target.value)}
-        />
-      </Field>
-
       <ChipGroup
         name="entrega"
         label="Precisa de entrega?"
         options={deliveryOptions}
         value={lead.entrega}
         onChange={(v) => set("entrega", v)}
+        className="sm:col-span-2"
       />
-
-      <Field id="prazo" label="Prazo de compra" hint="opcional">
-        <select id="f-prazo" className="input-animated" value={lead.prazo} onChange={(e) => set("prazo", e.target.value)}>
-          <option value="">Selecione</option>
-          {deadlineOptions.map((o) => (
-            <option key={o} value={o}>
-              {o}
-            </option>
-          ))}
-        </select>
-      </Field>
-
-      <Field id="mensagem" label="Mensagem adicional" hint="opcional" error={errors.mensagem} className="sm:col-span-2">
-        <textarea
-          id="f-mensagem"
-          className="input-animated min-h-24 resize-y"
-          placeholder="Altura da cerca, tipo de terreno, se precisa de mourão..."
-          value={lead.mensagem}
-          onChange={(e) => set("mensagem", e.target.value)}
-          {...invalid("mensagem", errors)}
-        />
-      </Field>
 
       <div className="flex flex-col gap-3 sm:col-span-2">
         <button type="submit" className="btn btn-primary w-full uppercase tracking-[0.06em]" disabled={status === "sending"}>

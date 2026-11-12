@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Header from "@/components/Header";
 import Reveal from "@/components/Reveal";
 import FlashlightCard from "@/components/FlashlightCard";
+import ImageCarousel from "@/components/ImageCarousel";
 import LeadForm from "@/components/LeadForm";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import {
@@ -14,6 +15,7 @@ import {
   factoryReasons,
   heroSeals,
   productList,
+  productSlides,
 } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -24,7 +26,7 @@ export default function Home() {
 
       <main>
         {/* ================= HERO ================= */}
-        <section id="top" className="bg-mesh relative overflow-hidden pb-24 pt-36 md:pb-32 md:pt-48">
+        <section id="top" className="bg-mesh relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-36">
           <div className="aurora-blob -right-40 -top-60 h-[600px] w-[600px] animate-aurora bg-accent/10" />
 
           <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-12 lg:gap-10">
@@ -80,12 +82,12 @@ export default function Home() {
             <Reveal variant="zoom" className="relative lg:col-span-5">
               <div className="hero-photo-card aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5]">
                 <Image
-                  src="/hero-alambrado.webp"
-                  alt="Alambrado de tela soldada instalado"
+                  src="/fotos/hero-chacara.webp"
+                  alt="Cerca de alambrado com mourões de madeira em frente a uma casa de chácara"
                   fill
                   priority
                   sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="object-cover"
+                  className="object-cover object-[center_62%]"
                 />
               </div>
               <div className="glass-panel-light absolute -bottom-8 left-4 flex items-center gap-4 rounded-lg px-5 py-4 shadow-xl sm:-left-8">
@@ -222,18 +224,12 @@ export default function Home() {
 
             <div className="grid gap-5 lg:grid-cols-3">
               <Reveal className="lg:row-span-2">
-                <div className="media-card h-full min-h-[380px]">
-                  <div className="bg">
-                    <Image src="/hero-alambrado.webp" alt="" fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
-                  </div>
-                  <div className="scrim" />
-                  <div className="relative z-10 flex h-full flex-col justify-end p-7">
-                    <span className="badge badge-primary mb-4 w-fit">Fabricação própria</span>
-                    <p className="font-display text-3xl uppercase leading-[0.95] text-white">
-                      Telas, arames e cercamentos feitos por nós.
-                    </p>
-                  </div>
-                </div>
+                <ImageCarousel slides={productSlides}>
+                  <span className="badge badge-primary mb-4 w-fit">Fabricação própria</span>
+                  <p className="font-display text-3xl uppercase leading-[0.95] text-white">
+                    Telas, arames e cercamentos feitos por nós.
+                  </p>
+                </ImageCarousel>
               </Reveal>
 
               <ul className="grid gap-px overflow-hidden rounded-card border border-neutral-100 bg-neutral-100 sm:grid-cols-2 lg:col-span-2">
