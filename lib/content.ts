@@ -74,6 +74,11 @@ export const productSlides = [
     caption: "Soldagem de telas e gradis",
   },
   {
+    src: "/fotos/gradil.webp",
+    alt: "Gradil preto de painéis soldados cercando um prédio comercial",
+    caption: "Gradil para empresas e residências",
+  },
+  {
     src: "/fotos/tela-hexagonal-rural.webp",
     alt: "Tela hexagonal galvanizada presa em mourões de madeira, com gado ao fundo",
     caption: "Tela hexagonal para o campo",
