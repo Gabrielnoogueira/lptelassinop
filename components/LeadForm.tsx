@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { areaTypes, deliveryOptions } from "@/lib/content";
 import { emptyLead, maskPhone, validateLead, type Lead, type LeadErrors } from "@/lib/lead";
+import { trackLead } from "@/lib/tracking";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -27,6 +28,17 @@ export default function LeadForm() {
       document.getElementById(`f-${first}`)?.focus();
       return;
     }
+    trackLead({
+      name: lead.nome,
+      phone: lead.whatsapp,
+      extra: {
+        Cidade: lead.cidade,
+        "Metragem aproximada": lead.metragem,
+        "Tipo de área": lead.tipoArea,
+        "Precisa de entrega?": lead.entrega,
+        Origem: "Formulário de orçamento",
+      },
+    });
     setStatus("sending");
     try {
       const res = await fetch("/api/lead", {
@@ -68,7 +80,7 @@ export default function LeadForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-6 sm:grid-cols-2">
+    <form onSubmit={onSubmit} noValidate data-trck-manual className="grid gap-6 sm:grid-cols-2">
       {/* honeypot anti-spam */}
       <input
         type="text"

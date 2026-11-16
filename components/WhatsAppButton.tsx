@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { maskPhone, validateQuickLead, type LeadErrors, type QuickLead } from "@/lib/lead";
 import { whatsappLink } from "@/lib/site";
+import { trackLead } from "@/lib/tracking";
 
 type Status = "idle" | "sending" | "redirecting" | "error";
 
@@ -54,6 +55,7 @@ export default function WhatsAppButton() {
       document.getElementById(`wa-${first}`)?.focus();
       return;
     }
+    trackLead({ name: lead.nome, phone: lead.whatsapp, extra: { Origem: "Botão WhatsApp" } });
     setStatus("sending");
     try {
       const res = await fetch("/api/lead", {
@@ -113,7 +115,7 @@ export default function WhatsAppButton() {
           Deixe seu nome e número. Se a conversa não abrir, nosso time chama você.
         </p>
 
-        <form onSubmit={onSubmit} noValidate className="grid gap-4">
+        <form onSubmit={onSubmit} noValidate data-trck-manual className="grid gap-4">
           <div>
             <label htmlFor="wa-nome" className="field-label">
               Nome
